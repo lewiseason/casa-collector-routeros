@@ -23,12 +23,12 @@ Run `casa-collector-routeros` and the collector will start in the foreground.
 
 Is done entirely through environment variables.
 
-| Environment variable                  | Description                                                                                    | Notes                                 |
-|---------------------------------------|------------------------------------------------------------------------------------------------|---------------------------------------|
-| REDIS_URL                             | The URL of the Redis instance                                                                  | Example: redis://localhost:6379       |
-| ROUTER_HOST, ROUTER_USER, ROUTER_PASS | The host and credentials of the RouterOS device (which must have its API correctly configured) | Using a read-only user is recommended |
-| INTERVAL                              | How frequently (in seconds) the router should be queried                                       | Default: 60                           |
-| LOGLEVEL                              | Log level. Messages are logged to stdout                                                       | Must be a valid Python [log level]    |
+| Environment variable                        | Description                                                                                    | Notes                                 |
+|---------------------------------------------|------------------------------------------------------------------------------------------------|---------------------------------------|
+| `REDIS_URL`                                 | The URL of the Redis instance                                                                  | Example: redis://localhost:6379       |
+| `ROUTER_HOST`, `ROUTER_USER`, `ROUTER_PASS` | The host and credentials of the RouterOS device (which must have its API correctly configured) | Using a read-only user is recommended |
+| `INTERVAL`                                  | How frequently (in seconds) the router should be queried                                       | Default: 60                           |
+| `LOGLEVEL`                                  | Log level. Messages are logged to stdout                                                       | Must be a valid Python [log level]    |
 
 
 [RouterOS API]: https://wiki.mikrotik.com/wiki/Manual:API
