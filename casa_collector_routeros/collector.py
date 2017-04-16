@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import datetime
 from apscheduler.schedulers.background import BlockingScheduler
 import redis
 import routeros_api
@@ -39,9 +40,12 @@ def run(config):
                                               username=config['ROUTER_USER'],
                                               password=config['ROUTER_PASS'])
     api = connection.get_api()
+    iso_now = datetime.datetime.now().replace(microsecond=0).isoformat()
 
     redis_connection = redis.from_url(config['REDIS_URL'])
 
+    # Ask the device for a list of ARP table entries, and filter the ones out
+    # which do not have a MAC address.
     arp_entries = api.get_resource('/ip/arp')
     addresses = set([entry['mac-address'] for entry in arp_entries.get()
                     if 'mac-address' in entry])
@@ -49,6 +53,11 @@ def run(config):
     logging.info("Found {} mac addresses in the ARP table: {}"
                  .format(len(addresses), addresses))
 
+    # Set "updated-at" to show that we've successfully retrieved the new data
+    # from the device.
+    redis_connection.set('mac-addresses-updated-at', iso_now)
+
+    # Pull the previous address list out of redis for comparison.
     previous_addresses = redis_connection.lrange('mac-addresses', 0, -1) or []
     previous_addresses = set([a.decode() for a in previous_addresses])
 
@@ -58,6 +67,9 @@ def run(config):
         transaction = redis_connection.pipeline()
         transaction.delete('mac-addresses')
         transaction.lpush('mac-addresses', *addresses)
+        # Set "changed-at" to indicate that the contents of the list actually
+        # changed at this time.
+        transaction.set('mac-addresses-changed-at', iso_now)
         transaction.execute()
 
         online = addresses - previous_addresses
