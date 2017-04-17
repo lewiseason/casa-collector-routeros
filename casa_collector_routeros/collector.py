@@ -31,7 +31,8 @@ def main():
     logging.warning("Checking the ARP table on `{}' every {} seconds."
                     .format(config['ROUTER_HOST'], config['INTERVAL']))
 
-    scheduler.add_job(run, 'interval', [config], seconds=config['INTERVAL'])
+    scheduler.add_job(run, 'interval', [config],
+                      seconds=config['INTERVAL'], coalesce=True)
     scheduler.start()
 
 

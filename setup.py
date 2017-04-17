@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='casa-collector-routeros',
-    version='0.2.1',
+    version='0.3.0',
     description='Collect information about RouterOS\'s ARP table and emit data and events to Redis',
     url='https://github.com/lewiseason/casa-collector-routeros',
     author='Lewis Eason',
